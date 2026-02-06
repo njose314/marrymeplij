@@ -1,0 +1,202 @@
+<!DOCTYPE html>  
+<html lang="en">  
+<head>  
+    <meta charset="UTF-8">  
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">  
+    <title>Propose Day | The Big Question</title>  
+    <script src="https://cdn.tailwindcss.com"></script>  
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">  
+    <style>  
+        body { background-color: #0a0a0a; color: #FFFDD0; font-family: 'Inter', sans-serif; overflow: hidden; touch-action: none; margin: 0; }  
+        .serif { font-family: 'Playfair Display', serif; }  
+        .gold-gradient { background: radial-gradient(circle, #4a3b00 0%, #0a0a0a 100%); }  
+        .hidden-screen { display: none !important; }  
+        #boxCanvas { touch-action: none; cursor: crosshair; }  
+        .btn-transition { transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); }  
+    </style>  
+</head>  
+<body>  
+  
+    <section id="screen1" class="h-screen flex flex-col items-center justify-center p-8 text-center gold-gradient">  
+        <div class="mb-8 text-6xl">💍</div>  
+        <h1 class="serif text-2xl italic leading-relaxed mb-12 opacity-0 transition-opacity duration-1000" id="introText">  
+            "They say life is a series of choices, but with you, there was only ever one."  
+        </h1>  
+        <div class="w-full relative h-64 flex flex-col items-center justify-center opacity-0 transition-opacity duration-1000 delay-500" id="trapContainer">  
+            <h2 class="serif text-xl mb-10">Will you let me annoy you for the rest of our lives?</h2>  
+            <div class="flex flex-col gap-6 w-full items-center">  
+                <button id="yesBtn" class="bg-yellow-600 text-black px-12 py-3 rounded-full font-bold uppercase tracking-widest z-50 btn-transition">YES</button>  
+                <button id="noBtn" class="border border-white/30 text-white/50 px-8 py-2 rounded-full text-sm absolute btn-transition">No</button>  
+            </div>  
+        </div>  
+    </section>  
+  
+    <section id="screen2" class="h-screen hidden-screen relative flex flex-col items-center justify-center bg-[#0a0a0a]">  
+        <div class="absolute inset-0 flex items-center justify-center p-10 text-center">  
+            <h2 class="serif text-3xl leading-snug text-yellow-100" id="proposeQuote">  
+                "I promise to always be the 'Big Gift' in your life... <br>  
+                <span class="text-lg opacity-80">(mostly because I'm a handful)</span><br>  
+                So, are you ready to be officially stuck with me? 😈"  
+            </h2>  
+        </div>  
+        <canvas id="boxCanvas" class="absolute inset-0 z-20"></canvas>  
+        <button id="nextToGame" class="absolute bottom-16 z-30 bg-yellow-700 text-white px-10 py-4 rounded-full opacity-0 pointer-events-none transition-opacity duration-500 font-bold uppercase tracking-widest">  
+            Lock It In  
+        </button>  
+    </section>  
+  
+    <section id="screen3" class="h-screen hidden-screen relative overflow-hidden gold-gradient">  
+        <div id="gameInstructions" class="absolute inset-0 z-[100] bg-black/95 flex flex-col items-center justify-center p-8 text-center transition-opacity duration-500">  
+            <div class="text-6xl mb-6">💎</div>  
+            <h2 class="serif text-2xl mb-4">The Commitment Quest</h2>  
+            <p class="italic opacity-80 mb-8 leading-relaxed">  
+                "Catch 15 diamonds to fill our future. Miss too many, and you owe me a very long, very romantic kiss. Ready to say I do?"  
+            </p>  
+            <button id="startGameBtn" class="bg-yellow-700 text-white px-10 py-3 rounded-full font-bold uppercase tracking-widest shadow-lg">  
+                I'm Ready  
+            </button>  
+        </div>  
+  
+        <div id="gameUI" class="absolute top-12 left-0 right-0 flex justify-around z-50 pointer-events-none">  
+            <div class="text-sm uppercase font-bold bg-black/40 px-4 py-1 rounded-full border border-yellow-700/50">Diamonds: <span id="score">0</span>/15</div>  
+        </div>  
+          
+        <div id="player" class="absolute bottom-24 left-1/2 -translate-x-1/2 w-20 h-20 bg-yellow-600/20 border-2 border-yellow-500 rounded-2xl flex items-center justify-center shadow-[0_0_30px_rgba(234,179,8,0.3)] z-50">  
+            <span class="text-4xl">💍</span>  
+        </div>  
+        <div id="gameContainer" class="absolute inset-0"></div>  
+    </section>  
+  
+    <section id="screen4" class="h-screen hidden-screen flex flex-col items-center justify-center text-center p-8 bg-[#0a0a0a]">  
+        <div class="text-8xl mb-8 animate-bounce">💖</div>  
+        <h1 class="serif text-4xl mb-4 text-yellow-100">Officially Proposed.</h1>  
+        <p class="opacity-70 mb-2 italic">You're stuck with me now.</p>  
+        <p class="text-yellow-500 serif italic mb-12">Status: Permanently Taken by Naveen</p>  
+        <button onclick="location.reload()" class="bg-yellow-700 text-white px-10 py-4 rounded-full font-bold uppercase tracking-widest shadow-lg">  
+            Give me my real ring  
+        </button>  
+    </section>  
+  
+    <script>  
+        const screens = ['screen1', 'screen2', 'screen3', 'screen4'];  
+        function showScreen(id) {  
+            screens.forEach(s => document.getElementById(s).classList.add('hidden-screen'));  
+            document.getElementById(id).classList.remove('hidden-screen');  
+            if(id === 'screen2') initBoxReveal();  
+            if(id === 'screen3') initCatchGame();  
+        }  
+  
+        // --- SCREEN 1: RUNAWAY NO ---  
+        setTimeout(() => document.getElementById('introText').style.opacity = '1', 500);  
+        setTimeout(() => document.getElementById('trapContainer').style.opacity = '1', 1500);  
+  
+        const noBtn = document.getElementById('noBtn');  
+        const yesBtn = document.getElementById('yesBtn');  
+        let yesScale = 1;  
+  
+        noBtn.addEventListener('touchstart', (e) => {  
+            e.preventDefault();  
+            const x = Math.random() * (window.innerWidth - 100);  
+            const y = Math.random() * (window.innerHeight - 100);  
+            noBtn.style.left = x + 'px';  
+            noBtn.style.top = y + 'px';  
+              
+            yesScale += 0.2;  
+            yesBtn.style.transform = `scale(${yesScale})`;  
+        });  
+  
+        yesBtn.addEventListener('click', () => {  
+            if (navigator.vibrate) navigator.vibrate(100);  
+            showScreen('screen2');  
+        });  
+  
+        // --- SCREEN 2: BOX REVEAL ---  
+        function initBoxReveal() {  
+            const canvas = document.getElementById('boxCanvas');  
+            const ctx = canvas.getContext('2d');  
+            const btn = document.getElementById('nextToGame');  
+            let cleared = 0;  
+  
+            canvas.width = window.innerWidth;  
+            canvas.height = window.innerHeight;  
+  
+            ctx.fillStyle = '#1a1400'; // Velvet Box Color  
+            ctx.fillRect(0, 0, canvas.width, canvas.height);  
+              
+            const handleMove = (e) => {  
+                const x = e.touches ? e.touches[0].clientX : e.clientX;  
+                const y = e.touches ? e.touches[0].clientY : e.clientY;  
+                ctx.globalCompositeOperation = 'destination-out';  
+                ctx.beginPath();  
+                ctx.arc(x, y, 50, 0, Math.PI * 2);  
+                ctx.fill();  
+                cleared++;  
+                if(cleared > 120) btn.classList.remove('opacity-0', 'pointer-events-none');  
+            };  
+  
+            canvas.addEventListener('touchmove', handleMove);  
+            btn.addEventListener('click', () => showScreen('screen3'));  
+        }  
+  
+        // --- SCREEN 3: CATCH GAME ---  
+        function initCatchGame() {  
+            const container = document.getElementById('gameContainer');  
+            const player = document.getElementById('player');  
+            const scoreEl = document.getElementById('score');  
+            const instructions = document.getElementById('gameInstructions');  
+            const startBtn = document.getElementById('startGameBtn');  
+              
+            let score = 0;  
+            let gameActive = false;  
+  
+            startBtn.addEventListener('click', () => {  
+                instructions.style.opacity = '0';  
+                setTimeout(() => { instructions.style.display = 'none'; gameActive = true; spawnItem(); }, 500);  
+            });  
+  
+            window.addEventListener('touchmove', (e) => {  
+                if(!gameActive) return;  
+                let x = e.touches[0].clientX - 40;  
+                x = Math.max(0, Math.min(window.innerWidth - 80, x));  
+                player.style.left = x + 'px';  
+            });  
+  
+            function spawnItem() {  
+                if(!gameActive) return;  
+                const item = document.createElement('div');  
+                const isBomb = Math.random() > 0.7;  
+                item.innerHTML = isBomb ? '❌' : '💎';  
+                item.className = 'absolute top-[-50px] text-4xl pointer-events-none z-40';  
+                item.style.left = Math.random() * (window.innerWidth - 50) + 'px';  
+                container.appendChild(item);  
+  
+                let pos = -50;  
+                const fall = setInterval(() => {  
+                    if(!gameActive) { clearInterval(fall); item.remove(); return; }  
+                    pos += 6;  
+                    item.style.top = pos + 'px';  
+  
+                    const pRect = player.getBoundingClientRect();  
+                    const iRect = item.getBoundingClientRect();  
+  
+                    if (iRect.top < pRect.bottom && iRect.bottom > pRect.top && iRect.left < pRect.right && iRect.right > pRect.left) {  
+                        clearInterval(fall);  
+                        item.remove();  
+                        if (isBomb) {  
+                            if (navigator.vibrate) navigator.vibrate(200);  
+                            score = Math.max(0, score - 1);  
+                        } else {  
+                            score++;  
+                        }  
+                        scoreEl.innerText = score;  
+                        if(score >= 15) { gameActive = false; showScreen('screen4'); }  
+                    }  
+                    if (pos > window.innerHeight) { clearInterval(fall); item.remove(); }  
+                }, 16);  
+                setTimeout(spawnItem, 600);  
+            }  
+        }  
+    </script>  
+</body>  
+</html>  
+  
