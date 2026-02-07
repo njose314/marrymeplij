@@ -8,58 +8,76 @@
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&family=Lora:ital@1&display=swap" rel="stylesheet">
     <style>
         :root { --accent: #ff0055; --bg: #050505; }
-        body { background: var(--bg); color: #fff; font-family: 'Space Grotesk', sans-serif; overflow: hidden; touch-action: none; }
+        body { background: var(--bg); color: #fff; font-family: 'Space Grotesk', sans-serif; overflow: hidden; touch-action: none; user-select: none; -webkit-user-select: none; }
         .serif-italic { font-family: 'Lora', serif; font-style: italic; }
         .hidden-screen { display: none !important; }
         .glass { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); backdrop-filter: blur(10px); }
         .accent-glow { box-shadow: 0 0 30px rgba(255, 0, 85, 0.2); }
-        #noBtn { position: absolute; transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1); }
+        #noBtn { position: absolute; transition: top 0.3s ease, left 0.3s ease; }
         .btn-active:active { transform: scale(0.95); opacity: 0.8; }
         #scannerRing { transition: all 0.3s ease; }
         .scanning #scannerRing { transform: scale(1.1); border-color: var(--accent); box-shadow: 0 0 40px rgba(255, 0, 85, 0.4); }
+        
+        /* Pulse Animation for Text */
+        @keyframes textGlitch {
+            0% { opacity: 1; } 50% { opacity: 0.8; text-shadow: 0 0 10px #ff0055; } 100% { opacity: 1; }
+        }
+        .pulse-text { animation: textGlitch 0.1s infinite; }
     </style>
 </head>
 <body>
 
-    <section id="screen1" class="h-screen flex flex-col justify-between p-10 py-20 text-center">
-        <div class="space-y-4">
+    <section id="screen1" class="h-screen flex flex-col justify-between p-10 py-20 text-center relative overflow-hidden">
+        <div class="absolute top-[-20%] left-[-20%] w-[140%] h-[140%] bg-[radial-gradient(circle_at_center,rgba(255,0,85,0.08),transparent_70%)] pointer-events-none"></div>
+
+        <div class="space-y-4 z-10">
             <p class="text-[10px] tracking-[0.4em] uppercase opacity-40">System Initialization</p>
             <h1 class="text-4xl font-light tracking-tighter">THE <span class="font-bold text-[#ff0055]">PROTOCOL</span></h1>
         </div>
-        <div class="relative flex flex-col items-center justify-center h-64">
+        
+        <div class="relative flex flex-col items-center justify-center h-64 z-10">
             <h2 class="serif-italic text-xl mb-12 opacity-80 leading-relaxed">"Do you authorize Naveen to hold executive rights over your heart?"</h2>
+            
             <div class="relative w-full flex justify-center items-center h-20">
-                <button id="yesBtn" class="glass px-16 py-4 text-sm font-bold uppercase tracking-widest z-50 accent-glow btn-active">Authorize</button>
-                <button id="noBtn" class="text-[10px] uppercase opacity-30 tracking-widest p-4">Decline</button>
+                <button id="yesBtn" class="glass px-16 py-4 text-sm font-bold uppercase tracking-widest z-50 accent-glow btn-active transition-transform">Authorize</button>
+                <button id="noBtn" class="text-[10px] uppercase opacity-30 tracking-widest p-6 cursor-pointer">Decline</button>
             </div>
         </div>
-        <div class="text-[8px] uppercase tracking-widest opacity-20">Secure Link Established // 2026</div>
+        
+        <div class="text-[8px] uppercase tracking-widest opacity-20 z-10">Secure Link Established // 2026</div>
     </section>
 
-    <section id="screen2" class="h-screen hidden-screen flex flex-col justify-center p-8 bg-[#080808]">
-        <div id="quizFrame" class="glass p-10 rounded-[2.5rem] space-y-8 relative overflow-hidden">
-            <p id="qStep" class="text-[10px] text-[#ff0055] font-bold tracking-[0.3em] uppercase">Phase 01</p>
-            <div id="quizContent" class="space-y-8">
+    <section id="screen2" class="h-screen hidden-screen flex flex-col justify-center p-6 bg-[#080808]">
+        <div id="quizFrame" class="glass p-8 rounded-[2rem] space-y-6 relative overflow-hidden border-t border-white/10">
+            <div class="absolute top-0 left-0 w-full h-1 bg-[#ff0055] opacity-50"></div>
+            <p id="qStep" class="text-[10px] text-[#ff0055] font-bold tracking-[0.3em] uppercase mb-4">Phase 01</p>
+            
+            <div id="quizContent" class="space-y-8 min-h-[300px] flex flex-col justify-center">
                 </div>
         </div>
     </section>
 
-    <section id="screen3" class="h-screen hidden-screen flex flex-col items-center justify-around p-10 text-center">
-        <div class="space-y-2">
+    <section id="screen3" class="h-screen hidden-screen flex flex-col items-center justify-around p-10 text-center relative">
+        <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,0,85,0.05),transparent_60%)] pointer-events-none"></div>
+        
+        <div class="space-y-2 z-10">
             <h2 class="text-2xl font-bold uppercase tracking-widest">Final Validation</h2>
             <p class="serif-italic opacity-50">Hold thumb to confirm the covenant</p>
         </div>
-        <div id="biometricArea" class="relative group">
-            <div id="scannerRing" class="w-48 h-48 rounded-full border border-white/10 flex items-center justify-center">
-                <div class="w-40 h-40 rounded-full border-2 border-[#ff0055] flex items-center justify-center bg-[#ff0055]/5">
-                    <span class="text-5xl grayscale opacity-50">☝️</span>
+        
+        <div id="biometricArea" class="relative group z-10 cursor-pointer select-none">
+            <div id="scannerRing" class="w-56 h-56 rounded-full border border-white/10 flex items-center justify-center bg-black">
+                <div class="w-48 h-48 rounded-full border-2 border-[#ff0055] flex items-center justify-center bg-[#ff0055]/5">
+                    <span class="text-6xl grayscale opacity-50 select-none pointer-events-none">☝️</span>
                 </div>
             </div>
-            <svg class="absolute top-0 left-0 w-48 h-48 -rotate-90 pointer-events-none">
-                <circle cx="96" cy="96" r="90" fill="transparent" stroke="#ff0055" stroke-width="4" stroke-dasharray="565" stroke-dashoffset="565" id="progressCircle"/>
+            
+            <svg class="absolute top-0 left-0 w-56 h-56 -rotate-90 pointer-events-none">
+                <circle cx="112" cy="112" r="108" fill="transparent" stroke="#ff0055" stroke-width="3" stroke-dasharray="678" stroke-dashoffset="678" id="progressCircle" style="transition: stroke-dashoffset 0.1s linear;"/>
             </svg>
         </div>
-        <div class="w-full max-w-xs space-y-4">
+        
+        <div class="w-full max-w-xs space-y-4 z-10">
             <div class="flex justify-between text-[10px] uppercase tracking-widest opacity-40">
                 <span>Encrypting</span>
                 <span id="percent">0%</span>
@@ -70,17 +88,21 @@
         </div>
     </section>
 
-    <section id="screen4" class="h-screen hidden-screen flex flex-col items-center justify-center p-10 text-center space-y-12">
-        <div class="space-y-4">
-            <div class="text-6xl mb-4">💍</div>
-            <h1 class="text-4xl font-bold tracking-tighter uppercase">Protocol Complete</h1>
-            <p class="serif-italic text-lg opacity-60">"The choice was always an illusion. You were already mine."</p>
+    <section id="screen4" class="h-screen hidden-screen flex flex-col items-center justify-center p-10 text-center space-y-12 bg-black relative">
+        <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20 pointer-events-none"></div>
+        
+        <div class="space-y-6 z-10">
+            <div class="text-7xl mb-6 drop-shadow-[0_0_15px_rgba(255,0,85,0.5)]">💍</div>
+            <h1 class="text-4xl font-bold tracking-tighter uppercase text-white">Protocol Complete</h1>
+            <p class="serif-italic text-lg text-white/60">"The choice was always an illusion. You were already mine."</p>
         </div>
-        <div class="glass p-6 rounded-2xl w-full accent-glow">
+        
+        <div class="glass p-6 rounded-xl w-full accent-glow z-10 border border-[#ff0055]/30">
             <p class="text-[10px] uppercase tracking-widest opacity-40 mb-2">Current Status</p>
-            <p class="text-[#ff0055] font-bold tracking-widest">PERMANENTLY TAKEN</p>
+            <p class="text-[#ff0055] font-bold tracking-[0.2em] text-lg">PERMANENTLY TAKEN</p>
         </div>
-        <button onclick="location.reload()" class="bg-[#ff0055] text-white px-12 py-4 rounded-full font-bold uppercase text-xs tracking-[0.2em] accent-glow btn-active">
+        
+        <button onclick="location.reload()" class="bg-[#ff0055] text-white px-10 py-4 rounded-full font-bold uppercase text-[10px] tracking-[0.25em] shadow-[0_0_20px_rgba(255,0,85,0.4)] active:scale-95 transition-transform z-10">
             Claim Your Reward
         </button>
     </section>
@@ -99,15 +121,23 @@
         let scale = 1;
 
         const moveNo = (e) => {
-            e.preventDefault();
-            const x = Math.random() * 60 + 10;
-            const y = Math.random() * 60 + 20;
+            // Prevent default only if touch to allow scrolling elsewhere if needed
+            if(e.type === 'touchstart') e.preventDefault();
+            
+            const x = Math.random() * 60 + 10; // Keep within 10-70vw
+            const y = Math.random() * 60 + 20; // Keep within 20-80vh
             noBtn.style.left = x + 'vw';
             noBtn.style.top = y + 'vh';
-            scale += 0.2;
+            
+            scale += 0.1;
             yesBtn.style.transform = `scale(${scale})`;
         };
+
+        // Add both touch and mouse listeners for robust testing
         noBtn.addEventListener('touchstart', moveNo);
+        noBtn.addEventListener('mouseover', moveNo); 
+        noBtn.addEventListener('click', moveNo);
+
         yesBtn.addEventListener('click', () => {
             if (navigator.vibrate) navigator.vibrate(50);
             showScreen('screen2');
@@ -123,24 +153,54 @@
 
         function loadQuestion() {
             const data = quiz[qIdx];
-            document.getElementById('qStep').innerText = `Sequence 0${qIdx + 1} / 03`;
-            document.getElementById('quizContent').innerHTML = `
-                <h2 class="text-xl font-medium tracking-tight leading-relaxed text-white/90">${data.q}</h2>
-                <div class="grid gap-4 pt-4">
-                    <button onclick="override('${data.r}')" class="glass py-5 text-[10px] uppercase tracking-widest btn-active">Option A</button>
-                    <button onclick="override('${data.r}')" class="glass py-5 text-[10px] uppercase tracking-widest btn-active">Option B</button>
-                </div>
-                <p class="text-[8px] opacity-20 uppercase tracking-widest text-center mt-4">Security Override Active</p>
-            `;
+            const content = document.getElementById('quizContent');
+            
+            // Clean injection without complex string quotes in HTML attributes
+            document.getElementById('qStep').innerText = `Phase 0${qIdx + 1} / 03`;
+            
+            content.innerHTML = ''; // Clear previous
+
+            const h2 = document.createElement('h2');
+            h2.className = "text-xl font-medium tracking-tight leading-relaxed text-white/90";
+            h2.innerText = data.q;
+            content.appendChild(h2);
+
+            const btnContainer = document.createElement('div');
+            btnContainer.className = "grid gap-4 pt-4";
+
+            // Button 1
+            const b1 = document.createElement('button');
+            b1.className = "glass py-5 text-[10px] uppercase tracking-widest btn-active hover:bg-white/5 transition-colors";
+            b1.innerText = "Option A"; // Generic label as requested
+            b1.onclick = () => runOverride(data.r);
+            
+            // Button 2
+            const b2 = document.createElement('button');
+            b2.className = "glass py-5 text-[10px] uppercase tracking-widest btn-active hover:bg-white/5 transition-colors";
+            b2.innerText = "Option B";
+            b2.onclick = () => runOverride(data.r);
+
+            btnContainer.appendChild(b1);
+            btnContainer.appendChild(b2);
+            content.appendChild(btnContainer);
+
+            const footer = document.createElement('p');
+            footer.className = "text-[8px] opacity-30 uppercase tracking-widest text-center mt-6";
+            footer.innerText = "Security Override Active";
+            content.appendChild(footer);
         }
 
-        window.override = function(msg) {
-            document.getElementById('quizContent').innerHTML = `<h2 class="serif-italic text-2xl text-[#ff0055] animate-pulse py-12 text-center">${msg}</h2>`;
+        function runOverride(msg) {
+            const content = document.getElementById('quizContent');
+            content.innerHTML = `<div class="flex items-center justify-center h-full"><h2 class="serif-italic text-2xl text-[#ff0055] text-center pulse-text leading-relaxed px-4">${msg}</h2></div>`;
+            
+            if(navigator.vibrate) navigator.vibrate(100);
+
             setTimeout(() => {
                 qIdx++;
                 if(qIdx < quiz.length) loadQuestion();
                 else showScreen('screen3');
-            }, 1800);
+            }, 2000);
         }
 
         // --- PHASE 3: BIOMETRIC ---
@@ -151,35 +211,57 @@
         const perc = document.getElementById('percent');
         let progress = 0;
         let interval;
+        let isHolding = false;
 
-        const start = (e) => {
-            e.preventDefault();
+        const startScan = (e) => {
+            if(e.cancelable) e.preventDefault(); // Stop scroll
+            if(isHolding) return;
+            isHolding = true;
+            
             scannerRing.parentElement.classList.add('scanning');
+            
             interval = setInterval(() => {
                 if(progress < 100) {
-                    progress += 1.2;
+                    progress += 1.5; // Speed of scan
+                    
+                    // Update UI
                     bar.style.width = progress + '%';
                     perc.innerText = Math.floor(progress) + '%';
-                    circle.style.strokeDashoffset = 565 - (565 * progress / 100);
-                    if (navigator.vibrate) navigator.vibrate(15);
+                    
+                    // Update SVG Circle (678 is circumference)
+                    const offset = 678 - (678 * progress / 100);
+                    circle.style.strokeDashoffset = offset;
+
+                    if (navigator.vibrate && Math.floor(progress) % 5 === 0) navigator.vibrate(20);
                 } else {
-                    clearInterval(interval);
+                    stopScan();
                     showScreen('screen4');
                 }
-            }, 50);
+            }, 30);
         };
 
-        const stop = () => {
+        const stopScan = () => {
+            isHolding = false;
             scannerRing.parentElement.classList.remove('scanning');
             clearInterval(interval);
-            progress = 0;
-            bar.style.width = '0%';
-            perc.innerText = '0%';
-            circle.style.strokeDashoffset = 565;
+            if(progress < 100) {
+                progress = 0;
+                bar.style.width = '0%';
+                perc.innerText = '0%';
+                circle.style.strokeDashoffset = 678;
+            }
         };
 
-        biometric.addEventListener('touchstart', start);
-        biometric.addEventListener('touchend', stop);
+        // Touch events
+        biometric.addEventListener('touchstart', startScan, {passive: false});
+        biometric.addEventListener('touchend', stopScan);
+        biometric.addEventListener('touchcancel', stopScan);
+        
+        // Mouse events for desktop testing
+        biometric.addEventListener('mousedown', startScan);
+        biometric.addEventListener('mouseup', stopScan);
+        biometric.addEventListener('mouseleave', stopScan);
+
     </script>
 </body>
 </html>
