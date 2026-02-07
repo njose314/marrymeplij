@@ -1,166 +1,198 @@
-<!DOCTYPE html>  
-<html lang="en">  
-<head>  
-    <meta charset="UTF-8">  
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">  
-    <title>Propose Day | The Impossible Knot</title>  
-    <script src="https://cdn.tailwindcss.com"></script>  
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">  
-    <style>  
-        body { background-color: #050505; color: #FFFDD0; font-family: 'Inter', sans-serif; overflow: hidden; touch-action: none; margin: 0; }  
-        .serif { font-family: 'Playfair Display', serif; }  
-        .gold-gradient { background: radial-gradient(circle, #2c2400 0%, #050505 100%); }  
-        .hidden-screen { display: none !important; }  
-        canvas { touch-action: none; }  
-        #yesBtn { transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); }  
-        #noBtn { transition: all 0.2s ease; position: absolute; }  
-    </style>  
-</head>  
-<body>  
-  
-    <section id="screen1" class="h-screen flex flex-col items-center justify-center p-8 text-center gold-gradient">  
-        <div class="mb-8 text-6xl">💍</div>  
-        <h1 class="serif text-2xl italic leading-relaxed mb-12 opacity-0 transition-opacity duration-1000" id="introText">  
-            "They say life is a series of choices, but with you, there was only ever one."  
-        </h1>  
-        <div class="w-full relative h-64 flex flex-col items-center justify-center opacity-0 transition-opacity duration-1000 delay-500" id="trapContainer">  
-            <h2 class="serif text-xl mb-10">Will you let me annoy you forever?</h2>  
-            <div class="flex flex-col gap-6 w-full items-center">  
-                <button id="yesBtn" class="bg-yellow-600 text-black px-12 py-3 rounded-full font-bold uppercase tracking-widest z-50">YES</button>  
-                <button id="noBtn" class="border border-white/30 text-white/50 px-8 py-2 rounded-full text-sm">No</button>  
-            </div>  
-        </div>  
-    </section>  
-  
-    <section id="screen2" class="h-screen hidden-screen relative flex flex-col items-center justify-center bg-[#050505]">  
-        <div class="absolute inset-0 flex items-center justify-center p-10 text-center">  
-            <h2 class="serif text-3xl leading-snug text-yellow-100" id="blushQuote">  
-                "Actually, I just want to lock this in. <br>  
-                Ready to be officially stuck with me? 😈"  
-            </h2>  
-        </div>  
-        <canvas id="revealCanvas" class="absolute inset-0 z-20"></canvas>  
-        <button id="toGameBtn" class="absolute bottom-16 z-30 bg-yellow-700 text-white px-10 py-4 rounded-full opacity-0 pointer-events-none transition-opacity duration-500 font-bold uppercase tracking-widest">  
-            Lock It In  
-        </button>  
-    </section>  
-  
-    <section id="screen3" class="h-screen hidden-screen relative flex flex-col items-center justify-center gold-gradient">  
-        <div id="knotInstructions" class="absolute inset-0 z-[100] bg-black/90 flex flex-col items-center justify-center p-8 text-center">  
-            <div class="text-6xl mb-6">🧵</div>  
-            <h2 class="serif text-2xl mb-4">Untie the Promise</h2>  
-            <p class="italic opacity-80 mb-8 leading-relaxed">  
-                "Trace the golden thread to the center heart. Don't let go, and don't stray... my heart is on the line."  
-            </p>  
-            <button id="startKnotBtn" class="bg-yellow-700 text-white px-10 py-3 rounded-full font-bold uppercase tracking-widest">Start Tracing</button>  
-        </div>  
-        <canvas id="knotCanvas"></canvas>  
-    </section>  
-  
-    <section id="screen4" class="h-screen hidden-screen flex flex-col items-center justify-center text-center p-8 bg-[#0a0a0a]">  
-        <div class="text-8xl mb-8 animate-bounce">💖</div>  
-        <h1 class="serif text-4xl mb-4 text-yellow-100">Officially Proposed.</h1>  
-        <p class="opacity-70 mb-12 italic">You're stuck with me now.</p>  
-        <button onclick="location.reload()" class="bg-yellow-700 text-white px-10 py-4 rounded-full font-bold uppercase tracking-widest shadow-lg">Claim your Kiss</button>  
-    </section>  
-  
-    <script>  
-        const screens = ['screen1', 'screen2', 'screen3', 'screen4'];  
-        function showScreen(id) {  
-            screens.forEach(s => document.getElementById(s).classList.add('hidden-screen'));  
-            document.getElementById(id).classList.remove('hidden-screen');  
-            if(id === 'screen2') initReveal();  
-            if(id === 'screen3') initKnotGame();  
-        }  
-  
-        // --- SCREEN 1: TRAP ---  
-        setTimeout(() => document.getElementById('introText').style.opacity = '1', 500);  
-        setTimeout(() => document.getElementById('trapContainer').style.opacity = '1', 1500);  
-          
-        const noBtn = document.getElementById('noBtn');  
-        const yesBtn = document.getElementById('yesBtn');  
-        let yesScale = 1;  
-  
-        const moveNo = () => {  
-            noBtn.style.left = Math.random() * (window.innerWidth - 100) + 'px';  
-            noBtn.style.top = Math.random() * (window.innerHeight - 100) + 'px';  
-            yesScale += 0.15;  
-            yesBtn.style.transform = `scale(${yesScale})`;  
-        };  
-  
-        noBtn.addEventListener('touchstart', (e) => { e.preventDefault(); moveNo(); });  
-        yesBtn.addEventListener('click', () => showScreen('screen2'));  
-  
-        // --- SCREEN 2: REVEAL ---  
-        function initReveal() {  
-            const canvas = document.getElementById('revealCanvas');  
-            const ctx = canvas.getContext('2d');  
-            canvas.width = window.innerWidth;  
-            canvas.height = window.innerHeight;  
-            ctx.fillStyle = '#1a1400';  
-            ctx.fillRect(0, 0, canvas.width, canvas.height);  
-  
-            const handleMove = (e) => {  
-                const x = e.touches ? e.touches[0].clientX : e.clientX;  
-                const y = e.touches ? e.touches[0].clientY : e.clientY;  
-                ctx.globalCompositeOperation = 'destination-out';  
-                ctx.beginPath(); ctx.arc(x, y, 45, 0, Math.PI * 2); ctx.fill();  
-                document.getElementById('toGameBtn').classList.remove('opacity-0', 'pointer-events-none');  
-            };  
-            canvas.addEventListener('touchmove', handleMove);  
-            document.getElementById('toGameBtn').addEventListener('click', () => showScreen('screen3'));  
-        }  
-  
-        // --- SCREEN 3: THE KNOT ---  
-        function initKnotGame() {  
-            const canvas = document.getElementById('knotCanvas');  
-            const ctx = canvas.getContext('2d');  
-            canvas.width = window.innerWidth;  
-            canvas.height = window.innerHeight;  
-  
-            const path = [];  
-            const centerX = canvas.width / 2;  
-            const centerY = canvas.height / 2;  
-              
-            // Create a spiral path  
-            for (let i = 0; i < 500; i++) {  
-                const angle = 0.1 * i;  
-                const r = (500 - i) * 0.6;  
-                path.push({ x: centerX + r * Math.cos(angle), y: centerY + r * Math.sin(angle) });  
-            }  
-  
-            document.getElementById('startKnotBtn').addEventListener('click', () => {  
-                document.getElementById('knotInstructions').style.display = 'none';  
-                draw();  
-            });  
-  
-            function draw() {  
-                ctx.clearRect(0, 0, canvas.width, canvas.height);  
-                ctx.strokeStyle = '#D4AF37'; ctx.lineWidth = 15; ctx.lineCap = 'round';  
-                ctx.beginPath();  
-                ctx.moveTo(path[0].x, path[0].y);  
-                path.forEach(p => ctx.lineTo(p.x, p.y));  
-                ctx.stroke();  
-                  
-                // Draw Target Heart  
-                ctx.font = '40px serif';  
-                ctx.fillText('❤️', centerX - 20, centerY + 15);  
-            }  
-  
-            canvas.addEventListener('touchmove', (e) => {  
-                const x = e.touches[0].clientX;  
-                const y = e.touches[0].clientY;  
-                  
-                // Simple hit detection  
-                const distToCenter = Math.hypot(x - centerX, y - centerY);  
-                if (distToCenter < 30) showScreen('screen4');  
-  
-                const pixel = ctx.getImageData(x, y, 1, 1).data;  
-                if (pixel[3] === 0) { // If touch is on transparent pixel (off path)  
-                    if (navigator.vibrate) navigator.vibrate(100);  
-                }  
-            });  
-        }  
-    </script>  
-</body>  
-</html>  
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>The Obsidian Protocol</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&family=Lora:ital@1&display=swap" rel="stylesheet">
+    <style>
+        :root { --accent: #ff0055; --bg: #050505; }
+        body { background: var(--bg); color: #fff; font-family: 'Space Grotesk', sans-serif; overflow: hidden; touch-action: none; }
+        .serif-italic { font-family: 'Lora', serif; font-style: italic; }
+        .hidden-screen { display: none !important; }
+        
+        /* Premium Glows */
+        .glass { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); backdrop-filter: blur(10px); }
+        .accent-glow { box-shadow: 0 0 30px rgba(255, 0, 85, 0.2); }
+        
+        /* Animations */
+        @keyframes scan { 0% { top: 0%; } 100% { top: 100%; } }
+        .scan-line { position: absolute; width: 100%; height: 2px; background: var(--accent); opacity: 0.5; animation: scan 2s linear infinite; }
+        #noBtn { position: absolute; transition: all 0.25s cubic-bezier(0.19, 1, 0.22, 1); }
+        .btn-active:active { transform: scale(0.95); opacity: 0.8; }
+    </style>
+</head>
+<body>
+
+    <section id="screen1" class="h-screen flex flex-col justify-between p-10 py-20 text-center">
+        <div class="space-y-4">
+            <p class="text-[10px] tracking-[0.4em] uppercase opacity-40">System Initialization</p>
+            <h1 class="text-4xl font-light tracking-tighter">THE <span class="font-bold text-[#ff0055]">PROTOCOL</span></h1>
+        </div>
+
+        <div class="relative flex flex-col items-center justify-center h-64">
+            <h2 class="serif-italic text-xl mb-12 opacity-80">"Do you authorize Naveen to hold executive rights over your heart?"</h2>
+            <div class="relative w-full flex justify-center items-center">
+                <button id="yesBtn" class="glass px-16 py-4 text-sm font-bold uppercase tracking-widest z-50 accent-glow btn-active">Authorize</button>
+                <button id="noBtn" class="text-[10px] uppercase opacity-30 tracking-widest">Decline</button>
+            </div>
+        </div>
+
+        <div class="text-[8px] uppercase tracking-widest opacity-20">Secure Link Established // 2026</div>
+    </section>
+
+    <section id="screen2" class="h-screen hidden-screen flex flex-col justify-center p-8 bg-[#080808]">
+        <div id="quizFrame" class="glass p-8 rounded-3xl space-y-8 relative overflow-hidden">
+            <div class="scan-line"></div>
+            <p id="qStep" class="text-[10px] text-[#ff0055] font-bold tracking-[0.3em] uppercase">Phase 01</p>
+            <div id="quizContent" class="space-y-6">
+                </div>
+        </div>
+    </section>
+
+    <section id="screen3" class="h-screen hidden-screen flex flex-col items-center justify-around p-10 text-center">
+        <div class="space-y-2">
+            <h2 class="text-2xl font-bold uppercase tracking-widest">Final Validation</h2>
+            <p class="serif-italic opacity-50">Place thumb to confirm commitment</p>
+        </div>
+
+        <div id="biometricArea" class="relative group">
+            <div id="scannerRing" class="w-48 h-48 rounded-full border border-white/10 flex items-center justify-center transition-all duration-500">
+                <div class="w-40 h-40 rounded-full border-2 border-[#ff0055] flex items-center justify-center bg-[#ff0055]/5">
+                    <span class="text-5xl grayscale opacity-50">☝️</span>
+                </div>
+            </div>
+            <svg class="absolute top-0 left-0 w-48 h-48 -rotate-90">
+                <circle cx="96" cy="96" r="90" fill="transparent" stroke="#ff0055" stroke-width="4" stroke-dasharray="565" stroke-dashoffset="565" id="progressCircle"/>
+            </svg>
+        </div>
+
+        <div class="w-full max-w-xs space-y-4">
+            <div class="flex justify-between text-[10px] uppercase tracking-widest opacity-40">
+                <span>Encrypting</span>
+                <span id="percent">0%</span>
+            </div>
+            <div class="h-[1px] w-full bg-white/10">
+                <div id="progressBar" class="h-full bg-[#ff0055] w-0"></div>
+            </div>
+        </div>
+    </section>
+
+    <section id="screen4" class="h-screen hidden-screen flex flex-col items-center justify-center p-10 text-center space-y-12">
+        <div class="space-y-4">
+            <div class="text-6xl mb-4">💎</div>
+            <h1 class="text-4xl font-bold tracking-tighter uppercase">Protocol Complete</h1>
+            <p class="serif-italic text-lg opacity-60">"You are now officially, irrevocably, mine."</p>
+        </div>
+        
+        <div class="glass p-6 rounded-2xl w-full">
+            <p class="text-[10px] uppercase tracking-widest opacity-40 mb-2">Current Status</p>
+            <p class="text-[#ff0055] font-bold tracking-widest">PERMANENTLY TAKEN</p>
+        </div>
+
+        <button onclick="location.reload()" class="bg-[#ff0055] text-white px-12 py-4 rounded-full font-bold uppercase text-xs tracking-[0.2em] accent-glow btn-active">
+            Claim Your Reward
+        </button>
+    </section>
+
+    <script>
+        const screens = ['screen1', 'screen2', 'screen3', 'screen4'];
+        function showScreen(id) {
+            screens.forEach(s => document.getElementById(s).classList.add('hidden-screen'));
+            const el = document.getElementById(id);
+            el.classList.remove('hidden-screen');
+            if(id === 'screen2') loadQuestion();
+        }
+
+        // --- PHASE 1: THE ELUSIVE NO ---
+        const noBtn = document.getElementById('noBtn');
+        const yesBtn = document.getElementById('yesBtn');
+        let scaleFactor = 1;
+
+        noBtn.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            const x = Math.random() * 60 + 10;
+            const y = Math.random() * 60 + 20;
+            noBtn.style.left = x + 'vw';
+            noBtn.style.top = y + 'vh';
+            scaleFactor += 0.2;
+            yesBtn.style.transform = `scale(${scaleFactor})`;
+        });
+
+        yesBtn.addEventListener('click', () => {
+            if (navigator.vibrate) navigator.vibrate(50);
+            showScreen('screen2');
+        });
+
+        // --- PHASE 2: OVERWRITE LOGIC ---
+        let qIdx = 0;
+        const quiz = [
+            { q: "Do you accept that my attention is now your only currency?", a1: "I guess", a2: "Absolutely", r: "OVERWRITE: 'MINE ALONE' SELECTED. 😈" },
+            { q: "Should our late nights be spent sleeping or talking?", a1: "Sleeping", a2: "Talking", r: "REGISTERED: 'NO SLEEP ALLOWED' 😈" },
+            { q: "Are you ready to be the best thing that ever happened to me?", a1: "Maybe", a2: "I already am", r: "CONFIRMED: YOU ARE MY EVERYTHING. 😈" }
+        ];
+
+        function loadQuestion() {
+            const data = quiz[qIdx];
+            document.getElementById('qStep').innerText = `Sequence 0${qIdx + 1} / 03`;
+            document.getElementById('quizContent').innerHTML = `
+                <h2 class="text-xl font-medium tracking-tight leading-relaxed text-white/90">${data.q}</h2>
+                <div class="grid gap-3 pt-4">
+                    <button onclick="override('${data.r}')" class="glass py-4 text-[10px] uppercase tracking-widest hover:bg-white/10 transition-all">${data.a1}</button>
+                    <button onclick="override('${data.r}')" class="glass py-4 text-[10px] uppercase tracking-widest hover:bg-white/10 transition-all">${data.a2}</button>
+                </div>
+            `;
+        }
+
+        function override(msg) {
+            document.getElementById('quizContent').innerHTML = `<h2 class="serif-italic text-2xl text-[#ff0055] animate-pulse py-10">${msg}</h2>`;
+            setTimeout(() => {
+                qIdx++;
+                if(qIdx < quiz.length) loadQuestion();
+                else showScreen('screen3');
+            }, 1800);
+        }
+
+        // --- PHASE 3: BIOMETRIC PROGRESS ---
+        const biometric = document.getElementById('biometricArea');
+        const circle = document.getElementById('progressCircle');
+        const bar = document.getElementById('progressBar');
+        const perc = document.getElementById('percent');
+        let progress = 0;
+        let active = false;
+        let interval;
+
+        const start = (e) => {
+            e.preventDefault();
+            active = true;
+            interval = setInterval(() => {
+                if(progress < 100) {
+                    progress += 1.5;
+                    bar.style.width = progress + '%';
+                    perc.innerText = Math.floor(progress) + '%';
+                    circle.style.strokeDashoffset = 565 - (565 * progress / 100);
+                    if (navigator.vibrate) navigator.vibrate(20);
+                } else {
+                    clearInterval(interval);
+                    showScreen('screen4');
+                }
+            }, 40);
+        };
+
+        const end = () => {
+            active = false;
+            clearInterval(interval);
+            if(progress < 100) {
+                progress = 0;
+                bar.style.width = '0%';
+                perc.innerText = '0%';
+                circle.style.strokeDashoffset = 565;
+            }
+        };
+
+        biometric.addEventListener('touchstart', start);
+        biometric.addEventListener('touchend', end);
+    </script>
+</body>
+</html>
