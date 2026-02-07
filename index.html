@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>The Obsidian Protocol | v2.0</title>
+    <title>The Obsidian Protocol | v2.1</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&family=Lora:ital@1&display=swap" rel="stylesheet">
     <style>
@@ -28,6 +28,14 @@
         /* Game Canvas */
         #gameCanvas { width: 100%; height: 100%; }
         
+        /* Toast Notification */
+        #gameToast {
+            text-shadow: 0 2px 10px rgba(0,0,0,0.8);
+            width: 90%;
+            max-width: 400px;
+            line-height: 1.4;
+        }
+
         /* Animations */
         @keyframes glitch { 0% { opacity: 1; transform: translateX(0); } 20% { opacity: 0.8; transform: translateX(-2px); } 40% { opacity: 1; transform: translateX(2px); } 100% { opacity: 1; transform: translateX(0); } }
         .glitch-anim { animation: glitch 0.2s linear; }
@@ -110,9 +118,8 @@
             <p class="text-[9px] text-[#ff0055] tracking-[0.3em] uppercase animate-pulse">Eliminate Distance // Target Heart</p>
         </div>
         <canvas id="gameCanvas"></canvas>
-        <div id="gameToast" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[#ff0055] font-bold text-xl uppercase tracking-widest opacity-0 pointer-events-none transition-opacity duration-200 text-center w-full px-4">
-            IMPACT! Retrying...
-        </div>
+        <div id="gameToast" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white font-medium text-lg tracking-widest opacity-0 pointer-events-none transition-opacity duration-200 text-center w-full px-4">
+            </div>
         <div class="absolute bottom-12 w-full text-center pointer-events-none opacity-40">
             <p class="text-[8px] uppercase tracking-[0.4em]">Tap Anywhere to Fire</p>
         </div>
@@ -155,7 +162,6 @@
         
         const moveNo = (e) => {
             if(e.type === 'touchstart') e.preventDefault(); 
-            // Calculated for safe zones (avoiding very edges)
             const x = Math.max(10, Math.min(80, Math.random() * 90));
             const y = Math.max(10, Math.min(80, Math.random() * 90));
             noBtn.style.left = x + '%';
@@ -165,8 +171,8 @@
         };
 
         noBtn.addEventListener('touchstart', moveNo);
-        noBtn.addEventListener('mouseover', moveNo); // Mouse support
-        noBtn.addEventListener('click', moveNo);     // Click support
+        noBtn.addEventListener('mouseover', moveNo);
+        noBtn.addEventListener('click', moveNo);
         
         yesBtn.addEventListener('click', () => { 
             if (navigator.vibrate) navigator.vibrate(50); 
@@ -243,7 +249,6 @@
                     progress += 1.5;
                     bar.style.width = progress + '%';
                     perc.innerText = Math.floor(progress) + '%';
-                    // Update Circle (678 is circumference)
                     circle.style.strokeDashoffset = 678 - (678 * progress / 100);
                     if (navigator.vibrate && Math.floor(progress) % 10 === 0) navigator.vibrate(10);
                 } else {
@@ -266,7 +271,7 @@
         biometric.addEventListener('mouseup', stopScan);
         biometric.addEventListener('mouseleave', stopScan);
 
-        // --- PHASE 4: GAME LOGIC ---
+        // --- PHASE 4: GAME LOGIC (MODIFIED) ---
         function startGame() {
             showScreen('screen4Game');
             initGame();
@@ -286,6 +291,16 @@
             let arrow = { x: window.innerWidth/2, y: window.innerHeight - 100, active: false, speed: 12 };
             const heart = { x: window.innerWidth/2, y: 80, radius: 35 };
             const labels = ["WORK", "STRESS", "PAST", "DRAMA", "BILLS"];
+            
+            // CUSTOM MESSAGES FOR OBSTACLES (Affectionate & Forgiving)
+            const feedbackMessages = {
+                "WORK": "Work can wait, baby! Focus on us. 🤫",
+                "STRESS": "Don't stress, my love! I got you. 🥺",
+                "PAST": "Forget the past, cutie! Look at me. 👀",
+                "DRAMA": "No drama allowed, beautiful! Just love. ✨",
+                "BILLS": "I'm priceless though, sweetheart! 💖"
+            };
+
             let obstacles = [];
             let gameRunning = true;
 
@@ -296,7 +311,7 @@
                     y: 200 + (i * 70),
                     text: labels[i % labels.length],
                     speed: (Math.random() * 1.5 + 1) * (Math.random() > 0.5 ? 1 : -1),
-                    width: 0 // calc later
+                    width: 0 
                 });
             }
 
@@ -364,20 +379,28 @@
                     }
 
                     // Collision: Lose/Retry
+                    let hit = false;
                     obstacles.forEach(obs => {
-                        if(arrow.x > obs.x - obs.width/2 && arrow.x < obs.x + obs.width/2 &&
+                        if(!hit && arrow.x > obs.x - obs.width/2 && arrow.x < obs.x + obs.width/2 &&
                            arrow.y > obs.y - 15 && arrow.y < obs.y + 15) {
                             
-                            // Hit Obstacle
-                            if(navigator.vibrate) navigator.vibrate(200);
+                            hit = true;
+                            // Soft vibration for "oops" moment
+                            if(navigator.vibrate) navigator.vibrate(100);
+                            
+                            // Reset Arrow
                             arrow.active = false;
                             arrow.y = window.innerHeight - 100;
                             
-                            // Visual Feedback
+                            // Visual Feedback (Customized per Obstacle)
                             const toast = document.getElementById('gameToast');
-                            toast.innerText = `HIT ${obs.text}! RETRYING...`;
+                            const customMsg = feedbackMessages[obs.text] || "Try again, cutie!";
+                            
+                            toast.innerText = customMsg;
                             toast.style.opacity = '1';
-                            setTimeout(() => toast.style.opacity = '0', 1000);
+                            
+                            // Hide toast after 1.5s
+                            setTimeout(() => toast.style.opacity = '0', 1500);
                         }
                     });
 
