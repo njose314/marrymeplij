@@ -1,0 +1,166 @@
+<!DOCTYPE html>  
+<html lang="en">  
+<head>  
+    <meta charset="UTF-8">  
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">  
+    <title>Propose Day | The Impossible Knot</title>  
+    <script src="https://cdn.tailwindcss.com"></script>  
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">  
+    <style>  
+        body { background-color: #050505; color: #FFFDD0; font-family: 'Inter', sans-serif; overflow: hidden; touch-action: none; margin: 0; }  
+        .serif { font-family: 'Playfair Display', serif; }  
+        .gold-gradient { background: radial-gradient(circle, #2c2400 0%, #050505 100%); }  
+        .hidden-screen { display: none !important; }  
+        canvas { touch-action: none; }  
+        #yesBtn { transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); }  
+        #noBtn { transition: all 0.2s ease; position: absolute; }  
+    </style>  
+</head>  
+<body>  
+  
+    <section id="screen1" class="h-screen flex flex-col items-center justify-center p-8 text-center gold-gradient">  
+        <div class="mb-8 text-6xl">💍</div>  
+        <h1 class="serif text-2xl italic leading-relaxed mb-12 opacity-0 transition-opacity duration-1000" id="introText">  
+            "They say life is a series of choices, but with you, there was only ever one."  
+        </h1>  
+        <div class="w-full relative h-64 flex flex-col items-center justify-center opacity-0 transition-opacity duration-1000 delay-500" id="trapContainer">  
+            <h2 class="serif text-xl mb-10">Will you let me annoy you forever?</h2>  
+            <div class="flex flex-col gap-6 w-full items-center">  
+                <button id="yesBtn" class="bg-yellow-600 text-black px-12 py-3 rounded-full font-bold uppercase tracking-widest z-50">YES</button>  
+                <button id="noBtn" class="border border-white/30 text-white/50 px-8 py-2 rounded-full text-sm">No</button>  
+            </div>  
+        </div>  
+    </section>  
+  
+    <section id="screen2" class="h-screen hidden-screen relative flex flex-col items-center justify-center bg-[#050505]">  
+        <div class="absolute inset-0 flex items-center justify-center p-10 text-center">  
+            <h2 class="serif text-3xl leading-snug text-yellow-100" id="blushQuote">  
+                "Actually, I just want to lock this in. <br>  
+                Ready to be officially stuck with me? 😈"  
+            </h2>  
+        </div>  
+        <canvas id="revealCanvas" class="absolute inset-0 z-20"></canvas>  
+        <button id="toGameBtn" class="absolute bottom-16 z-30 bg-yellow-700 text-white px-10 py-4 rounded-full opacity-0 pointer-events-none transition-opacity duration-500 font-bold uppercase tracking-widest">  
+            Lock It In  
+        </button>  
+    </section>  
+  
+    <section id="screen3" class="h-screen hidden-screen relative flex flex-col items-center justify-center gold-gradient">  
+        <div id="knotInstructions" class="absolute inset-0 z-[100] bg-black/90 flex flex-col items-center justify-center p-8 text-center">  
+            <div class="text-6xl mb-6">🧵</div>  
+            <h2 class="serif text-2xl mb-4">Untie the Promise</h2>  
+            <p class="italic opacity-80 mb-8 leading-relaxed">  
+                "Trace the golden thread to the center heart. Don't let go, and don't stray... my heart is on the line."  
+            </p>  
+            <button id="startKnotBtn" class="bg-yellow-700 text-white px-10 py-3 rounded-full font-bold uppercase tracking-widest">Start Tracing</button>  
+        </div>  
+        <canvas id="knotCanvas"></canvas>  
+    </section>  
+  
+    <section id="screen4" class="h-screen hidden-screen flex flex-col items-center justify-center text-center p-8 bg-[#0a0a0a]">  
+        <div class="text-8xl mb-8 animate-bounce">💖</div>  
+        <h1 class="serif text-4xl mb-4 text-yellow-100">Officially Proposed.</h1>  
+        <p class="opacity-70 mb-12 italic">You're stuck with me now.</p>  
+        <button onclick="location.reload()" class="bg-yellow-700 text-white px-10 py-4 rounded-full font-bold uppercase tracking-widest shadow-lg">Claim your Kiss</button>  
+    </section>  
+  
+    <script>  
+        const screens = ['screen1', 'screen2', 'screen3', 'screen4'];  
+        function showScreen(id) {  
+            screens.forEach(s => document.getElementById(s).classList.add('hidden-screen'));  
+            document.getElementById(id).classList.remove('hidden-screen');  
+            if(id === 'screen2') initReveal();  
+            if(id === 'screen3') initKnotGame();  
+        }  
+  
+        // --- SCREEN 1: TRAP ---  
+        setTimeout(() => document.getElementById('introText').style.opacity = '1', 500);  
+        setTimeout(() => document.getElementById('trapContainer').style.opacity = '1', 1500);  
+          
+        const noBtn = document.getElementById('noBtn');  
+        const yesBtn = document.getElementById('yesBtn');  
+        let yesScale = 1;  
+  
+        const moveNo = () => {  
+            noBtn.style.left = Math.random() * (window.innerWidth - 100) + 'px';  
+            noBtn.style.top = Math.random() * (window.innerHeight - 100) + 'px';  
+            yesScale += 0.15;  
+            yesBtn.style.transform = `scale(${yesScale})`;  
+        };  
+  
+        noBtn.addEventListener('touchstart', (e) => { e.preventDefault(); moveNo(); });  
+        yesBtn.addEventListener('click', () => showScreen('screen2'));  
+  
+        // --- SCREEN 2: REVEAL ---  
+        function initReveal() {  
+            const canvas = document.getElementById('revealCanvas');  
+            const ctx = canvas.getContext('2d');  
+            canvas.width = window.innerWidth;  
+            canvas.height = window.innerHeight;  
+            ctx.fillStyle = '#1a1400';  
+            ctx.fillRect(0, 0, canvas.width, canvas.height);  
+  
+            const handleMove = (e) => {  
+                const x = e.touches ? e.touches[0].clientX : e.clientX;  
+                const y = e.touches ? e.touches[0].clientY : e.clientY;  
+                ctx.globalCompositeOperation = 'destination-out';  
+                ctx.beginPath(); ctx.arc(x, y, 45, 0, Math.PI * 2); ctx.fill();  
+                document.getElementById('toGameBtn').classList.remove('opacity-0', 'pointer-events-none');  
+            };  
+            canvas.addEventListener('touchmove', handleMove);  
+            document.getElementById('toGameBtn').addEventListener('click', () => showScreen('screen3'));  
+        }  
+  
+        // --- SCREEN 3: THE KNOT ---  
+        function initKnotGame() {  
+            const canvas = document.getElementById('knotCanvas');  
+            const ctx = canvas.getContext('2d');  
+            canvas.width = window.innerWidth;  
+            canvas.height = window.innerHeight;  
+  
+            const path = [];  
+            const centerX = canvas.width / 2;  
+            const centerY = canvas.height / 2;  
+              
+            // Create a spiral path  
+            for (let i = 0; i < 500; i++) {  
+                const angle = 0.1 * i;  
+                const r = (500 - i) * 0.6;  
+                path.push({ x: centerX + r * Math.cos(angle), y: centerY + r * Math.sin(angle) });  
+            }  
+  
+            document.getElementById('startKnotBtn').addEventListener('click', () => {  
+                document.getElementById('knotInstructions').style.display = 'none';  
+                draw();  
+            });  
+  
+            function draw() {  
+                ctx.clearRect(0, 0, canvas.width, canvas.height);  
+                ctx.strokeStyle = '#D4AF37'; ctx.lineWidth = 15; ctx.lineCap = 'round';  
+                ctx.beginPath();  
+                ctx.moveTo(path[0].x, path[0].y);  
+                path.forEach(p => ctx.lineTo(p.x, p.y));  
+                ctx.stroke();  
+                  
+                // Draw Target Heart  
+                ctx.font = '40px serif';  
+                ctx.fillText('❤️', centerX - 20, centerY + 15);  
+            }  
+  
+            canvas.addEventListener('touchmove', (e) => {  
+                const x = e.touches[0].clientX;  
+                const y = e.touches[0].clientY;  
+                  
+                // Simple hit detection  
+                const distToCenter = Math.hypot(x - centerX, y - centerY);  
+                if (distToCenter < 30) showScreen('screen4');  
+  
+                const pixel = ctx.getImageData(x, y, 1, 1).data;  
+                if (pixel[3] === 0) { // If touch is on transparent pixel (off path)  
+                    if (navigator.vibrate) navigator.vibrate(100);  
+                }  
+            });  
+        }  
+    </script>  
+</body>  
+</html>  
