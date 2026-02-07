@@ -3,209 +3,228 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>The Obsidian Protocol</title>
+    <title>The Obsidian Protocol | v2.0</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&family=Lora:ital@1&display=swap" rel="stylesheet">
     <style>
-        :root { --accent: #ff0055; --bg: #050505; }
+        :root { --accent: #ff0055; --bg: #050505; --glass: rgba(255, 255, 255, 0.05); }
         body { background: var(--bg); color: #fff; font-family: 'Space Grotesk', sans-serif; overflow: hidden; touch-action: none; user-select: none; -webkit-user-select: none; }
         .serif-italic { font-family: 'Lora', serif; font-style: italic; }
         .hidden-screen { display: none !important; }
-        .glass { background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); backdrop-filter: blur(10px); }
-        .accent-glow { box-shadow: 0 0 30px rgba(255, 0, 85, 0.2); }
-        #noBtn { position: absolute; transition: top 0.3s ease, left 0.3s ease; }
-        .btn-active:active { transform: scale(0.95); opacity: 0.8; }
-        #scannerRing { transition: all 0.3s ease; }
-        .scanning #scannerRing { transform: scale(1.1); border-color: var(--accent); box-shadow: 0 0 40px rgba(255, 0, 85, 0.4); }
         
-        /* Pulse Animation for Text */
-        @keyframes textGlitch {
-            0% { opacity: 1; } 50% { opacity: 0.8; text-shadow: 0 0 10px #ff0055; } 100% { opacity: 1; }
-        }
-        .pulse-text { animation: textGlitch 0.1s infinite; }
+        /* UI Elements */
+        .glass { background: var(--glass); border: 1px solid rgba(255, 255, 255, 0.1); backdrop-filter: blur(12px); }
+        .accent-glow { box-shadow: 0 0 25px rgba(255, 0, 85, 0.3); }
+        .neon-text { text-shadow: 0 0 10px rgba(255, 0, 85, 0.5); }
+        
+        /* Buttons */
+        #noBtn { position: absolute; transition: top 0.25s ease-out, left 0.25s ease-out; }
+        .btn-active:active { transform: scale(0.96); opacity: 0.9; }
+        
+        /* Scanner Animation */
+        #scannerRing { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .scanning #scannerRing { transform: scale(1.15); border-color: var(--accent); box-shadow: 0 0 50px rgba(255, 0, 85, 0.5); }
+        
+        /* Game Canvas */
+        #gameCanvas { width: 100%; height: 100%; }
+        
+        /* Animations */
+        @keyframes glitch { 0% { opacity: 1; transform: translateX(0); } 20% { opacity: 0.8; transform: translateX(-2px); } 40% { opacity: 1; transform: translateX(2px); } 100% { opacity: 1; transform: translateX(0); } }
+        .glitch-anim { animation: glitch 0.2s linear; }
     </style>
 </head>
 <body>
 
-    <section id="screen1" class="h-screen flex flex-col justify-between p-10 py-20 text-center relative overflow-hidden">
-        <div class="absolute top-[-20%] left-[-20%] w-[140%] h-[140%] bg-[radial-gradient(circle_at_center,rgba(255,0,85,0.08),transparent_70%)] pointer-events-none"></div>
+    <section id="screen1" class="h-screen flex flex-col justify-between p-8 py-16 text-center relative overflow-hidden">
+        <div class="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,0,85,0.08),transparent_60%)] pointer-events-none"></div>
 
-        <div class="space-y-4 z-10">
-            <p class="text-[10px] tracking-[0.4em] uppercase opacity-40">System Initialization</p>
-            <h1 class="text-4xl font-light tracking-tighter">THE <span class="font-bold text-[#ff0055]">PROTOCOL</span></h1>
+        <div class="space-y-2 z-10 pt-10">
+            <p class="text-[10px] tracking-[0.3em] uppercase opacity-50 text-[#ff0055]">Heartware v2.0</p>
+            <h1 class="text-4xl font-bold tracking-tighter uppercase">Access <span class="text-[#ff0055] neon-text">Control</span></h1>
         </div>
-        
+
         <div class="relative flex flex-col items-center justify-center h-64 z-10">
-            <h2 class="serif-italic text-xl mb-12 opacity-80 leading-relaxed">"Do you authorize Naveen to hold executive rights over your heart?"</h2>
-            
-            <div class="relative w-full flex justify-center items-center h-20">
-                <button id="yesBtn" class="glass px-16 py-4 text-sm font-bold uppercase tracking-widest z-50 accent-glow btn-active transition-transform">Authorize</button>
-                <button id="noBtn" class="text-[10px] uppercase opacity-30 tracking-widest p-6 cursor-pointer">Decline</button>
+            <h2 class="serif-italic text-xl mb-12 opacity-90 leading-relaxed px-4">"Requesting root access to your heart. Do you authorize Naveen?"</h2>
+            <div class="relative w-full h-24 flex justify-center items-center">
+                <button id="yesBtn" class="glass px-12 py-4 text-xs font-bold uppercase tracking-[0.2em] z-50 accent-glow btn-active border-[#ff0055]/30">Grant Access</button>
+                <button id="noBtn" class="text-[9px] uppercase opacity-40 tracking-widest p-6">Deny</button>
             </div>
         </div>
-        
-        <div class="text-[8px] uppercase tracking-widest opacity-20 z-10">Secure Link Established // 2026</div>
+
+        <div class="text-[8px] uppercase tracking-widest opacity-20 z-10 pb-6">Secure Connection // Encryption: LOVE-256</div>
     </section>
 
     <section id="screen2" class="h-screen hidden-screen flex flex-col justify-center p-6 bg-[#080808]">
-        <div id="quizFrame" class="glass p-8 rounded-[2rem] space-y-6 relative overflow-hidden border-t border-white/10">
-            <div class="absolute top-0 left-0 w-full h-1 bg-[#ff0055] opacity-50"></div>
-            <p id="qStep" class="text-[10px] text-[#ff0055] font-bold tracking-[0.3em] uppercase mb-4">Phase 01</p>
-            
-            <div id="quizContent" class="space-y-8 min-h-[300px] flex flex-col justify-center">
-                </div>
+        <div id="quizFrame" class="glass p-8 rounded-[2rem] space-y-6 relative border-t border-white/10 shadow-2xl">
+            <div class="flex justify-between items-center">
+                <p id="qStep" class="text-[9px] text-[#ff0055] font-bold tracking-[0.25em] uppercase">Protocol 01</p>
+                <div class="h-1 w-1 rounded-full bg-[#ff0055] animate-pulse"></div>
+            </div>
+            <div id="quizContent" class="min-h-[320px] flex flex-col justify-center"></div>
         </div>
     </section>
 
     <section id="screen3" class="h-screen hidden-screen flex flex-col items-center justify-around p-10 text-center relative">
-        <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,0,85,0.05),transparent_60%)] pointer-events-none"></div>
-        
-        <div class="space-y-2 z-10">
-            <h2 class="text-2xl font-bold uppercase tracking-widest">Final Validation</h2>
-            <p class="serif-italic opacity-50">Hold thumb to confirm the covenant</p>
+        <div class="space-y-2 z-10 pt-10">
+            <h2 class="text-xl font-bold uppercase tracking-[0.2em]">Soulmetric Scan</h2>
+            <p class="serif-italic text-sm opacity-50">Hold thumb to verify compatibility</p>
         </div>
         
-        <div id="biometricArea" class="relative group z-10 cursor-pointer select-none">
-            <div id="scannerRing" class="w-56 h-56 rounded-full border border-white/10 flex items-center justify-center bg-black">
-                <div class="w-48 h-48 rounded-full border-2 border-[#ff0055] flex items-center justify-center bg-[#ff0055]/5">
-                    <span class="text-6xl grayscale opacity-50 select-none pointer-events-none">☝️</span>
+        <div id="biometricArea" class="relative group z-10 cursor-pointer select-none py-10">
+            <div id="scannerRing" class="w-56 h-56 rounded-full border border-white/10 flex items-center justify-center bg-[#0a0a0a]">
+                <div class="w-44 h-44 rounded-full border border-[#ff0055]/30 flex items-center justify-center bg-[#ff0055]/5 backdrop-blur-md">
+                    <span class="text-6xl grayscale opacity-40 select-none pointer-events-none">☝️</span>
                 </div>
             </div>
-            
-            <svg class="absolute top-0 left-0 w-56 h-56 -rotate-90 pointer-events-none">
-                <circle cx="112" cy="112" r="108" fill="transparent" stroke="#ff0055" stroke-width="3" stroke-dasharray="678" stroke-dashoffset="678" id="progressCircle" style="transition: stroke-dashoffset 0.1s linear;"/>
+            <svg class="absolute top-10 left-0 w-56 h-56 -rotate-90 pointer-events-none overflow-visible">
+                <circle cx="112" cy="112" r="108" fill="transparent" stroke="#ff0055" stroke-width="2" stroke-dasharray="678" stroke-dashoffset="678" id="progressCircle" style="transition: stroke-dashoffset 0.1s linear; filter: drop-shadow(0 0 4px #ff0055);"/>
             </svg>
         </div>
         
-        <div class="w-full max-w-xs space-y-4 z-10">
-            <div class="flex justify-between text-[10px] uppercase tracking-widest opacity-40">
-                <span>Encrypting</span>
+        <div class="w-full max-w-[200px] space-y-3 z-10">
+            <div class="flex justify-between text-[9px] uppercase tracking-widest opacity-40">
+                <span>Syncing Emotions</span>
                 <span id="percent">0%</span>
             </div>
-            <div class="h-[1px] w-full bg-white/10">
+            <div class="h-[2px] w-full bg-white/10 rounded-full overflow-hidden">
                 <div id="progressBar" class="h-full bg-[#ff0055] w-0 transition-all duration-75"></div>
             </div>
         </div>
     </section>
 
-    <section id="screen4" class="h-screen hidden-screen flex flex-col items-center justify-center p-10 text-center space-y-12 bg-black relative">
-        <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20 pointer-events-none"></div>
+    <section id="screen4Intro" class="h-screen hidden-screen flex flex-col items-center justify-center p-8 text-center bg-black/95 z-50 absolute inset-0">
+        <h2 class="text-3xl font-bold uppercase tracking-tighter text-[#ff0055] mb-2 neon-text">Mission Brief</h2>
+        <p class="serif-italic text-lg opacity-80 mb-8">"Navigate through the chaos to find my heart."</p>
+        <div class="text-left space-y-4 text-xs tracking-widest uppercase opacity-70 mb-12 border-l-2 border-[#ff0055] pl-6">
+            <p>1. Target: <span class="text-white font-bold">The Heart ❤️</span></p>
+            <p>2. Avoid: <span class="text-white font-bold">Work, Stress, Past</span></p>
+            <p>3. Action: <span class="text-white font-bold">Tap to Fire Arrow</span></p>
+        </div>
+        <button onclick="startGame()" class="bg-[#ff0055] text-white px-10 py-4 rounded-full font-bold uppercase text-xs tracking-[0.2em] accent-glow btn-active">
+            Start Mission
+        </button>
+    </section>
+
+    <section id="screen4Game" class="h-screen hidden-screen relative bg-[#050505] flex flex-col">
+        <div class="absolute top-6 left-0 w-full text-center pointer-events-none z-10">
+            <p class="text-[9px] text-[#ff0055] tracking-[0.3em] uppercase animate-pulse">Eliminate Distance // Target Heart</p>
+        </div>
+        <canvas id="gameCanvas"></canvas>
+        <div id="gameToast" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[#ff0055] font-bold text-xl uppercase tracking-widest opacity-0 pointer-events-none transition-opacity duration-200 text-center w-full px-4">
+            IMPACT! Retrying...
+        </div>
+        <div class="absolute bottom-12 w-full text-center pointer-events-none opacity-40">
+            <p class="text-[8px] uppercase tracking-[0.4em]">Tap Anywhere to Fire</p>
+        </div>
+    </section>
+
+    <section id="screen5" class="h-screen hidden-screen flex flex-col items-center justify-center p-8 text-center bg-black relative">
+        <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,0,85,0.1),transparent_80%)] pointer-events-none"></div>
         
-        <div class="space-y-6 z-10">
-            <div class="text-7xl mb-6 drop-shadow-[0_0_15px_rgba(255,0,85,0.5)]">💍</div>
-            <h1 class="text-4xl font-bold tracking-tighter uppercase text-white">Protocol Complete</h1>
-            <p class="serif-italic text-lg text-white/60">"The choice was always an illusion. You were already mine."</p>
+        <div class="space-y-8 z-10">
+            <div class="text-7xl mb-4 drop-shadow-[0_0_25px_rgba(255,0,85,0.6)] animate-bounce">💍</div>
+            <div>
+                <h1 class="text-3xl font-bold tracking-tighter uppercase text-white mb-2">Proposal Accepted</h1>
+                <p class="serif-italic text-lg text-white/70">"Fatal Error: I can't live without you."</p>
+            </div>
         </div>
         
-        <div class="glass p-6 rounded-xl w-full accent-glow z-10 border border-[#ff0055]/30">
-            <p class="text-[10px] uppercase tracking-widest opacity-40 mb-2">Current Status</p>
-            <p class="text-[#ff0055] font-bold tracking-[0.2em] text-lg">PERMANENTLY TAKEN</p>
+        <div class="glass p-6 rounded-xl w-full max-w-xs accent-glow z-10 border border-[#ff0055]/30 mt-12">
+            <p class="text-[9px] uppercase tracking-widest opacity-50 mb-3">Relationship Status</p>
+            <p class="text-[#ff0055] font-bold tracking-[0.2em] text-lg neon-text">PERMANENTLY TAKEN</p>
         </div>
         
-        <button onclick="location.reload()" class="bg-[#ff0055] text-white px-10 py-4 rounded-full font-bold uppercase text-[10px] tracking-[0.25em] shadow-[0_0_20px_rgba(255,0,85,0.4)] active:scale-95 transition-transform z-10">
-            Claim Your Reward
+        <button onclick="location.reload()" class="mt-12 bg-[#ff0055] text-white px-10 py-4 rounded-full font-bold uppercase text-[10px] tracking-[0.25em] shadow-[0_0_25px_rgba(255,0,85,0.4)] active:scale-95 transition-transform z-10">
+            Reboot System
         </button>
     </section>
 
     <script>
-        const screens = ['screen1', 'screen2', 'screen3', 'screen4'];
+        // --- SCREEN NAVIGATION ---
+        const screens = ['screen1', 'screen2', 'screen3', 'screen4Intro', 'screen4Game', 'screen5'];
         function showScreen(id) {
             screens.forEach(s => document.getElementById(s).classList.add('hidden-screen'));
             document.getElementById(id).classList.remove('hidden-screen');
             if(id === 'screen2') loadQuestion();
         }
 
-        // --- PHASE 1: THE TRAP ---
+        // --- PHASE 1: TRAP LOGIC ---
         const noBtn = document.getElementById('noBtn');
         const yesBtn = document.getElementById('yesBtn');
         let scale = 1;
-
+        
         const moveNo = (e) => {
-            // Prevent default only if touch to allow scrolling elsewhere if needed
-            if(e.type === 'touchstart') e.preventDefault();
-            
-            const x = Math.random() * 60 + 10; // Keep within 10-70vw
-            const y = Math.random() * 60 + 20; // Keep within 20-80vh
-            noBtn.style.left = x + 'vw';
-            noBtn.style.top = y + 'vh';
-            
-            scale += 0.1;
+            if(e.type === 'touchstart') e.preventDefault(); 
+            // Calculated for safe zones (avoiding very edges)
+            const x = Math.max(10, Math.min(80, Math.random() * 90));
+            const y = Math.max(10, Math.min(80, Math.random() * 90));
+            noBtn.style.left = x + '%';
+            noBtn.style.top = y + '%';
+            scale += 0.15;
             yesBtn.style.transform = `scale(${scale})`;
         };
 
-        // Add both touch and mouse listeners for robust testing
         noBtn.addEventListener('touchstart', moveNo);
-        noBtn.addEventListener('mouseover', moveNo); 
-        noBtn.addEventListener('click', moveNo);
-
-        yesBtn.addEventListener('click', () => {
-            if (navigator.vibrate) navigator.vibrate(50);
-            showScreen('screen2');
+        noBtn.addEventListener('mouseover', moveNo); // Mouse support
+        noBtn.addEventListener('click', moveNo);     // Click support
+        
+        yesBtn.addEventListener('click', () => { 
+            if (navigator.vibrate) navigator.vibrate(50); 
+            showScreen('screen2'); 
         });
 
-        // --- PHASE 2: OVERWRITE LOGIC ---
+        // --- PHASE 2: QUIZ LOGIC ---
         let qIdx = 0;
         const quiz = [
-            { q: "Do you accept that my attention is now your only currency?", a1: "I guess", a2: "Absolutely", r: "OVERWRITE: 'MINE ALONE' SELECTED. 😈" },
-            { q: "Should our late nights be spent sleeping or talking?", a1: "Sleeping", a2: "Talking", r: "REGISTERED: 'NO SLEEP ALLOWED' 😈" },
-            { q: "Are you ready to be the best thing that ever happened to me?", a1: "Maybe", a2: "I already am", r: "CONFIRMED: YOU ARE MY EVERYTHING. 😈" }
+            { q: "Execute command: Accept that my attention is now your primary currency?", a1: "Maybe...", a2: "Command Accepted", r: "OVERWRITE: 'MINE ALONE' SELECTED. 😈" },
+            { q: "Optimization Required: Should late nights be spent sleeping or talking?", a1: "Sleeping", a2: "Talking", r: "UPDATED: 'SLEEP MODE DISABLED' 😈" },
+            { q: "Final Check: Are you ready to be the best thing in my life?", a1: "I guess", a2: "I already am", r: "CONFIRMED: YOU ARE MY EVERYTHING. 😈" }
         ];
 
         function loadQuestion() {
             const data = quiz[qIdx];
             const content = document.getElementById('quizContent');
-            
-            // Clean injection without complex string quotes in HTML attributes
-            document.getElementById('qStep').innerText = `Phase 0${qIdx + 1} / 03`;
-            
-            content.innerHTML = ''; // Clear previous
+            document.getElementById('qStep').innerText = `Protocol 0${qIdx + 1}`;
+            content.innerHTML = '';
 
             const h2 = document.createElement('h2');
-            h2.className = "text-xl font-medium tracking-tight leading-relaxed text-white/90";
+            h2.className = "text-xl font-medium tracking-tight leading-relaxed text-white/90 mb-8";
             h2.innerText = data.q;
             content.appendChild(h2);
 
             const btnContainer = document.createElement('div');
-            btnContainer.className = "grid gap-4 pt-4";
+            btnContainer.className = "space-y-4";
 
-            // Button 1
-            const b1 = document.createElement('button');
-            b1.className = "glass py-5 text-[10px] uppercase tracking-widest btn-active hover:bg-white/5 transition-colors";
-            b1.innerText = "Option A"; // Generic label as requested
-            b1.onclick = () => runOverride(data.r);
-            
-            // Button 2
-            const b2 = document.createElement('button');
-            b2.className = "glass py-5 text-[10px] uppercase tracking-widest btn-active hover:bg-white/5 transition-colors";
-            b2.innerText = "Option B";
-            b2.onclick = () => runOverride(data.r);
-
-            btnContainer.appendChild(b1);
-            btnContainer.appendChild(b2);
+            [data.a1, data.a2].forEach(ans => {
+                const btn = document.createElement('button');
+                btn.className = "w-full glass py-4 text-[10px] uppercase tracking-widest btn-active hover:bg-white/5 transition-colors rounded-lg";
+                btn.innerText = ans;
+                btn.onclick = () => runOverride(data.r);
+                btnContainer.appendChild(btn);
+            });
             content.appendChild(btnContainer);
-
-            const footer = document.createElement('p');
-            footer.className = "text-[8px] opacity-30 uppercase tracking-widest text-center mt-6";
-            footer.innerText = "Security Override Active";
-            content.appendChild(footer);
         }
 
         function runOverride(msg) {
             const content = document.getElementById('quizContent');
-            content.innerHTML = `<div class="flex items-center justify-center h-full"><h2 class="serif-italic text-2xl text-[#ff0055] text-center pulse-text leading-relaxed px-4">${msg}</h2></div>`;
+            if(navigator.vibrate) navigator.vibrate(80);
             
-            if(navigator.vibrate) navigator.vibrate(100);
-
+            content.innerHTML = `
+                <div class="flex items-center justify-center h-full min-h-[200px]">
+                    <h2 class="serif-italic text-2xl text-[#ff0055] text-center leading-relaxed px-4 animate-pulse glitch-anim">
+                        ${msg}
+                    </h2>
+                </div>`;
+            
             setTimeout(() => {
                 qIdx++;
                 if(qIdx < quiz.length) loadQuestion();
                 else showScreen('screen3');
-            }, 2000);
+            }, 2200);
         }
 
-        // --- PHASE 3: BIOMETRIC ---
+        // --- PHASE 3: BIOMETRIC LOGIC ---
         const biometric = document.getElementById('biometricArea');
-        const scannerRing = document.getElementById('scannerRing');
         const circle = document.getElementById('progressCircle');
         const bar = document.getElementById('progressBar');
         const perc = document.getElementById('percent');
@@ -214,54 +233,178 @@
         let isHolding = false;
 
         const startScan = (e) => {
-            if(e.cancelable) e.preventDefault(); // Stop scroll
+            if(e.cancelable) e.preventDefault();
             if(isHolding) return;
             isHolding = true;
-            
-            scannerRing.parentElement.classList.add('scanning');
+            document.getElementById('scannerRing').parentElement.classList.add('scanning');
             
             interval = setInterval(() => {
                 if(progress < 100) {
-                    progress += 1.5; // Speed of scan
-                    
-                    // Update UI
+                    progress += 1.5;
                     bar.style.width = progress + '%';
                     perc.innerText = Math.floor(progress) + '%';
-                    
-                    // Update SVG Circle (678 is circumference)
-                    const offset = 678 - (678 * progress / 100);
-                    circle.style.strokeDashoffset = offset;
-
-                    if (navigator.vibrate && Math.floor(progress) % 5 === 0) navigator.vibrate(20);
+                    // Update Circle (678 is circumference)
+                    circle.style.strokeDashoffset = 678 - (678 * progress / 100);
+                    if (navigator.vibrate && Math.floor(progress) % 10 === 0) navigator.vibrate(10);
                 } else {
                     stopScan();
-                    showScreen('screen4');
+                    showScreen('screen4Intro');
                 }
             }, 30);
         };
 
         const stopScan = () => {
             isHolding = false;
-            scannerRing.parentElement.classList.remove('scanning');
+            document.getElementById('scannerRing').parentElement.classList.remove('scanning');
             clearInterval(interval);
-            if(progress < 100) {
-                progress = 0;
-                bar.style.width = '0%';
-                perc.innerText = '0%';
-                circle.style.strokeDashoffset = 678;
-            }
+            if(progress < 100) { progress = 0; bar.style.width = '0%'; perc.innerText = '0%'; circle.style.strokeDashoffset = 678; }
         };
 
-        // Touch events
         biometric.addEventListener('touchstart', startScan, {passive: false});
         biometric.addEventListener('touchend', stopScan);
-        biometric.addEventListener('touchcancel', stopScan);
-        
-        // Mouse events for desktop testing
         biometric.addEventListener('mousedown', startScan);
         biometric.addEventListener('mouseup', stopScan);
         biometric.addEventListener('mouseleave', stopScan);
 
+        // --- PHASE 4: GAME LOGIC ---
+        function startGame() {
+            showScreen('screen4Game');
+            initGame();
+        }
+
+        function initGame() {
+            const canvas = document.getElementById('gameCanvas');
+            const ctx = canvas.getContext('2d');
+            
+            // High DPI Scaling
+            const dpr = window.devicePixelRatio || 1;
+            canvas.width = window.innerWidth * dpr;
+            canvas.height = window.innerHeight * dpr;
+            ctx.scale(dpr, dpr);
+            
+            // Game State
+            let arrow = { x: window.innerWidth/2, y: window.innerHeight - 100, active: false, speed: 12 };
+            const heart = { x: window.innerWidth/2, y: 80, radius: 35 };
+            const labels = ["WORK", "STRESS", "PAST", "DRAMA", "BILLS"];
+            let obstacles = [];
+            let gameRunning = true;
+
+            // Create Obstacles
+            for(let i=0; i<5; i++) {
+                obstacles.push({
+                    x: Math.random() * window.innerWidth,
+                    y: 200 + (i * 70),
+                    text: labels[i % labels.length],
+                    speed: (Math.random() * 1.5 + 1) * (Math.random() > 0.5 ? 1 : -1),
+                    width: 0 // calc later
+                });
+            }
+
+            function draw() {
+                if(!gameRunning) return;
+                
+                // Clear Canvas
+                ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+
+                // Draw Heart Target
+                ctx.shadowBlur = 20; ctx.shadowColor = "#ff0055";
+                ctx.fillStyle = "#ff0055";
+                ctx.beginPath(); ctx.arc(heart.x, heart.y, heart.radius, 0, Math.PI * 2); ctx.fill();
+                ctx.shadowBlur = 0;
+                ctx.fillStyle = "white"; ctx.font = "30px Arial"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+                ctx.fillText("❤️", heart.x, heart.y + 2);
+
+                // Draw Obstacles
+                ctx.font = "bold 12px 'Space Grotesk'";
+                obstacles.forEach(obs => {
+                    obs.x += obs.speed;
+                    if(obs.x > window.innerWidth || obs.x < 0) obs.speed *= -1; // Bounce
+                    
+                    const textMetrics = ctx.measureText(obs.text);
+                    const w = textMetrics.width + 30;
+                    obs.width = w;
+
+                    // Draw capsule
+                    ctx.fillStyle = "rgba(255, 255, 255, 0.1)";
+                    ctx.strokeStyle = "rgba(255, 0, 85, 0.5)";
+                    ctx.beginPath();
+                    ctx.roundRect(obs.x - w/2, obs.y - 15, w, 30, 15);
+                    ctx.fill(); ctx.stroke();
+
+                    ctx.fillStyle = "white";
+                    ctx.fillText(obs.text, obs.x, obs.y);
+                });
+
+                // Draw Launcher
+                ctx.fillStyle = "#ff0055";
+                ctx.beginPath();
+                ctx.moveTo(window.innerWidth/2 - 10, window.innerHeight - 40);
+                ctx.lineTo(window.innerWidth/2 + 10, window.innerHeight - 40);
+                ctx.lineTo(window.innerWidth/2, window.innerHeight - 60);
+                ctx.fill();
+
+                // Draw Arrow
+                if(arrow.active) {
+                    arrow.y -= arrow.speed;
+                    
+                    // Arrow Body
+                    ctx.strokeStyle = "#ff0055";
+                    ctx.lineWidth = 3;
+                    ctx.beginPath();
+                    ctx.moveTo(arrow.x, arrow.y);
+                    ctx.lineTo(arrow.x, arrow.y + 30);
+                    ctx.stroke();
+
+                    // Collision: Win
+                    const dist = Math.hypot(arrow.x - heart.x, arrow.y - heart.y);
+                    if(dist < heart.radius) {
+                        gameRunning = false;
+                        if(navigator.vibrate) navigator.vibrate([50, 50, 200]);
+                        showScreen('screen5');
+                    }
+
+                    // Collision: Lose/Retry
+                    obstacles.forEach(obs => {
+                        if(arrow.x > obs.x - obs.width/2 && arrow.x < obs.x + obs.width/2 &&
+                           arrow.y > obs.y - 15 && arrow.y < obs.y + 15) {
+                            
+                            // Hit Obstacle
+                            if(navigator.vibrate) navigator.vibrate(200);
+                            arrow.active = false;
+                            arrow.y = window.innerHeight - 100;
+                            
+                            // Visual Feedback
+                            const toast = document.getElementById('gameToast');
+                            toast.innerText = `HIT ${obs.text}! RETRYING...`;
+                            toast.style.opacity = '1';
+                            setTimeout(() => toast.style.opacity = '0', 1000);
+                        }
+                    });
+
+                    // Missed Top
+                    if(arrow.y < 0) {
+                        arrow.active = false;
+                        arrow.y = window.innerHeight - 100;
+                    }
+                }
+
+                requestAnimationFrame(draw);
+            }
+
+            // Input Handling
+            const fire = (e) => {
+                if(e.cancelable) e.preventDefault();
+                if(!arrow.active && gameRunning) {
+                    if(navigator.vibrate) navigator.vibrate(20);
+                    arrow.active = true;
+                }
+            };
+            
+            canvas.addEventListener('touchstart', fire);
+            canvas.addEventListener('mousedown', fire);
+            
+            draw();
+        }
     </script>
 </body>
 </html>
